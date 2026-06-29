@@ -110,6 +110,59 @@ public class RdsPostgresConfig {
             System.out.println("Connecting to RDS PostgreSQL database via JDBC...");
             try (Connection conn = DriverManager.getConnection(jdbcUrl, props)) {
                 System.out.println("SUCCESS: Successfully connected to AWS RDS PostgreSQL database!");
+                
+                System.out.println("Executing RDS 'db push' schema initialization...");
+                try (java.sql.Statement stmt = conn.createStatement()) {
+                    stmt.execute("CREATE TABLE IF NOT EXISTS products (" +
+                            "id VARCHAR(100) PRIMARY KEY, " +
+                            "name VARCHAR(255), " +
+                            "brand VARCHAR(255), " +
+                            "photoUrl VARCHAR(1024), " +
+                            "mfgDate VARCHAR(50), " +
+                            "expDate VARCHAR(50), " +
+                            "arrivingDate VARCHAR(50), " +
+                            "quantity INTEGER, " +
+                            "price DOUBLE PRECISION)");
+                    System.out.println("-> Table 'products' verified/created.");
+
+                    stmt.execute("CREATE TABLE IF NOT EXISTS offers (" +
+                            "offerId VARCHAR(100) PRIMARY KEY, " +
+                            "productId VARCHAR(100), " +
+                            "offerType VARCHAR(100), " +
+                            "discount DOUBLE PRECISION, " +
+                            "active BOOLEAN, " +
+                            "startDate VARCHAR(50), " +
+                            "endDate VARCHAR(50))");
+                    System.out.println("-> Table 'offers' verified/created.");
+
+                    stmt.execute("CREATE TABLE IF NOT EXISTS sales (" +
+                            "billId VARCHAR(100), " +
+                            "productId VARCHAR(100), " +
+                            "quantitySold INTEGER, " +
+                            "saleDate VARCHAR(50), " +
+                            "totalAmount DOUBLE PRECISION, " +
+                            "PRIMARY KEY (billId, productId))");
+                    System.out.println("-> Table 'sales' verified/created.");
+
+                    stmt.execute("CREATE TABLE IF NOT EXISTS notifications (" +
+                            "notificationId VARCHAR(100) PRIMARY KEY, " +
+                            "type VARCHAR(100), " +
+                            "message VARCHAR(1024), " +
+                            "productId VARCHAR(100), " +
+                            "timestamp VARCHAR(100), " +
+                            "readStatus BOOLEAN)");
+                    System.out.println("-> Table 'notifications' verified/created.");
+
+                    stmt.execute("CREATE TABLE IF NOT EXISTS customer_profiles (" +
+                            "mobile VARCHAR(100) PRIMARY KEY, " +
+                            "name VARCHAR(255), " +
+                            "points INTEGER)");
+                    System.out.println("-> Table 'customer_profiles' verified/created.");
+                    
+                    System.out.println("SUCCESS: RDS 'db push' schema initialization completed successfully!");
+                } catch (Exception e) {
+                    System.err.println("DB PUSH ERROR: Failed to create tables in PostgreSQL: " + e.getMessage());
+                }
             } catch (Exception e) {
                 System.err.println("CONNECTION ERROR: Failed to connect to AWS RDS PostgreSQL database.");
                 System.err.println("Details: " + e.getMessage());
