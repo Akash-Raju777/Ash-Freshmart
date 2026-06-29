@@ -58,9 +58,18 @@ public class RdsPostgresConfig {
             System.out.println("Region: " + rdsRegion);
             System.out.println("----------------------------------------------------------------");
 
-            // 1. Resolve AWS Credentials using the standard DefaultCredentialsProvider
-            software.amazon.awssdk.auth.credentials.AwsCredentialsProvider credentialsProvider = 
-                software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider.create();
+            // 1. Resolve AWS Credentials: check properties first, then default provider
+            software.amazon.awssdk.auth.credentials.AwsCredentialsProvider credentialsProvider;
+            if (accessKeyId != null && !accessKeyId.trim().isEmpty() &&
+                secretAccessKey != null && !secretAccessKey.trim().isEmpty()) {
+                credentialsProvider = software.amazon.awssdk.auth.credentials.StaticCredentialsProvider.create(
+                    software.amazon.awssdk.auth.credentials.AwsBasicCredentials.create(accessKeyId.trim(), secretAccessKey.trim())
+                );
+                System.out.println("Using static AWS credentials from properties.");
+            } else {
+                credentialsProvider = software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider.create();
+                System.out.println("Using standard AWS DefaultCredentialsProvider.");
+            }
 
             // 2. Generate or use pre-configured RDS IAM Database Authentication Token
             String token = System.getProperty("RDS_PASSWORD");
