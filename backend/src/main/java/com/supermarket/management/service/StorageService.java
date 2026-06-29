@@ -14,7 +14,15 @@ import java.util.UUID;
 @Service
 public class StorageService {
 
-    private final Path rootLocation = Paths.get("backend/uploads");
+    private final Path rootLocation;
+
+    public StorageService() {
+        Path path = Paths.get("uploads");
+        if (java.nio.file.Files.exists(Paths.get("backend"))) {
+            path = Paths.get("backend/uploads");
+        }
+        this.rootLocation = path;
+    }
 
     @PostConstruct
     public void init() {

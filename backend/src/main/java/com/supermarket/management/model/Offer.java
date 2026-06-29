@@ -1,10 +1,5 @@
 package com.supermarket.management.model;
 
-import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbAttribute;
-import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
-import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
-
-@DynamoDbBean
 public class Offer {
     private String offerId;
     private String productId;
@@ -27,8 +22,6 @@ public class Offer {
         this.endDate = endDate;
     }
 
-    @DynamoDbPartitionKey
-    @DynamoDbAttribute("offer_id")
     public String getOfferId() {
         return offerId;
     }
@@ -37,7 +30,6 @@ public class Offer {
         this.offerId = offerId;
     }
 
-    @DynamoDbAttribute("product_id")
     public String getProductId() {
         return productId;
     }
@@ -46,7 +38,6 @@ public class Offer {
         this.productId = productId;
     }
 
-    @DynamoDbAttribute("offer_type")
     public String getOfferType() {
         return offerType;
     }
@@ -55,7 +46,6 @@ public class Offer {
         this.offerType = offerType;
     }
 
-    @DynamoDbAttribute("discount")
     public Double getDiscount() {
         return discount;
     }
@@ -64,7 +54,6 @@ public class Offer {
         this.discount = discount;
     }
 
-    @DynamoDbAttribute("active")
     public Boolean getActive() {
         return active;
     }
@@ -73,7 +62,6 @@ public class Offer {
         this.active = active;
     }
 
-    @DynamoDbAttribute("start_date")
     public String getStartDate() {
         return startDate;
     }
@@ -82,7 +70,6 @@ public class Offer {
         this.startDate = startDate;
     }
 
-    @DynamoDbAttribute("end_date")
     public String getEndDate() {
         return endDate;
     }

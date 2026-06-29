@@ -1,10 +1,5 @@
 package com.supermarket.management.model;
 
-import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbAttribute;
-import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
-import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
-
-@DynamoDbBean
 public class CustomerProfile {
     private String mobile;
     private String name;
@@ -19,8 +14,6 @@ public class CustomerProfile {
         this.points = points;
     }
 
-    @DynamoDbPartitionKey
-    @DynamoDbAttribute("mobile")
     public String getMobile() {
         return mobile;
     }
@@ -29,7 +22,6 @@ public class CustomerProfile {
         this.mobile = mobile;
     }
 
-    @DynamoDbAttribute("name")
     public String getName() {
         return name;
     }
@@ -38,7 +30,6 @@ public class CustomerProfile {
         this.name = name;
     }
 
-    @DynamoDbAttribute("points")
     public Integer getPoints() {
         return points;
     }

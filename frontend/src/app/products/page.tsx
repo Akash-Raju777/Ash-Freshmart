@@ -130,8 +130,11 @@ export default function ProductTrackerPage() {
         try {
           finalPhotoUrl = await api.uploadImage(imageFile);
         } catch (uploadErr) {
-          alert('Failed to upload image. Using default placeholder.');
-          finalPhotoUrl = 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=300';
+          console.error("Backend image upload failed:", uploadErr);
+          alert('Image upload failed. Please try again.');
+          setLoading(false);
+          setImageUploading(false);
+          return;
         } finally {
           setImageUploading(false);
         }
@@ -141,7 +144,7 @@ export default function ProductTrackerPage() {
         id: formId || undefined,
         name: formName,
         brand: formBrand,
-        photoUrl: finalPhotoUrl || 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=300',
+        photoUrl: finalPhotoUrl || '',
         mfgDate: formMfg,
         expDate: formExp,
         arrivingDate: formArrival,

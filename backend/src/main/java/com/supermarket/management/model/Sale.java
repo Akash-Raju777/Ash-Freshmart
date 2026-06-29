@@ -1,11 +1,5 @@
 package com.supermarket.management.model;
 
-import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbAttribute;
-import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
-import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
-import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSortKey;
-
-@DynamoDbBean
 public class Sale {
     private String billId;
     private String productId;
@@ -38,8 +32,6 @@ public class Sale {
         this.totalAmount = totalAmount;
     }
 
-    @DynamoDbPartitionKey
-    @DynamoDbAttribute("bill_id")
     public String getBillId() {
         return billId;
     }
@@ -48,8 +40,6 @@ public class Sale {
         this.billId = billId;
     }
 
-    @DynamoDbSortKey
-    @DynamoDbAttribute("product_id")
     public String getProductId() {
         return productId;
     }
@@ -58,7 +48,6 @@ public class Sale {
         this.productId = productId;
     }
 
-    @DynamoDbAttribute("quantity_sold")
     public Integer getQuantitySold() {
         return quantitySold;
     }
@@ -67,7 +56,6 @@ public class Sale {
         this.quantitySold = quantitySold;
     }
 
-    @DynamoDbAttribute("sale_date")
     public String getSaleDate() {
         return saleDate;
     }
@@ -76,7 +64,6 @@ public class Sale {
         this.saleDate = saleDate;
     }
 
-    @DynamoDbAttribute("total_amount")
     public Double getTotalAmount() {
         return totalAmount;
     }
@@ -85,7 +72,6 @@ public class Sale {
         this.totalAmount = totalAmount;
     }
 
-    @DynamoDbAttribute("product_name")
     public String getProductName() {
         return productName;
     }
@@ -94,7 +80,6 @@ public class Sale {
         this.productName = productName;
     }
 
-    @DynamoDbAttribute("price")
     public Double getPrice() {
         return price;
     }
@@ -103,7 +88,6 @@ public class Sale {
         this.price = price;
     }
 
-    @DynamoDbAttribute("original_line_total")
     public Double getOriginalLineTotal() {
         return originalLineTotal;
     }
@@ -112,7 +96,6 @@ public class Sale {
         this.originalLineTotal = originalLineTotal;
     }
 
-    @DynamoDbAttribute("discount_applied")
     public Double getDiscountApplied() {
         return discountApplied;
     }
@@ -121,7 +104,6 @@ public class Sale {
         this.discountApplied = discountApplied;
     }
 
-    @DynamoDbAttribute("customer_mobile")
     public String getCustomerMobile() {
         return customerMobile;
     }
@@ -130,7 +112,6 @@ public class Sale {
         this.customerMobile = customerMobile;
     }
 
-    @DynamoDbAttribute("customer_name")
     public String getCustomerName() {
         return customerName;
     }
@@ -139,7 +120,6 @@ public class Sale {
         this.customerName = customerName;
     }
 
-    @DynamoDbAttribute("points_earned")
     public Integer getPointsEarned() {
         return pointsEarned;
     }
@@ -148,7 +128,6 @@ public class Sale {
         this.pointsEarned = pointsEarned;
     }
 
-    @DynamoDbAttribute("total_points")
     public Integer getTotalPoints() {
         return totalPoints;
     }
@@ -157,7 +136,6 @@ public class Sale {
         this.totalPoints = totalPoints;
     }
 
-    @DynamoDbAttribute("subtotal")
     public Double getSubtotal() {
         return subtotal;
     }
@@ -166,7 +144,6 @@ public class Sale {
         this.subtotal = subtotal;
     }
 
-    @DynamoDbAttribute("discount")
     public Double getDiscount() {
         return discount;
     }
@@ -175,7 +152,6 @@ public class Sale {
         this.discount = discount;
     }
 
-    @DynamoDbAttribute("tax")
     public Double getTax() {
         return tax;
     }
@@ -184,7 +160,6 @@ public class Sale {
         this.tax = tax;
     }
 
-    @DynamoDbAttribute("final_amount")
     public Double getFinalAmount() {
         return finalAmount;
     }

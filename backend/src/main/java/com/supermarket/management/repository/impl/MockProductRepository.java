@@ -14,7 +14,7 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Repository
-@Profile("!aws")
+@Profile("!rds")
 public class MockProductRepository implements ProductRepository {
 
     private final Map<String, Product> products = new ConcurrentHashMap<>();

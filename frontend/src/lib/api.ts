@@ -10,6 +10,14 @@ export interface Product {
   arrivingDate: string;
   quantity: number;
   price: number;
+  sku?: string;
+  barcode?: string;
+  category?: string;
+  costPrice?: number;
+  gst?: number;
+  supplier?: string;
+  batchNumber?: string;
+  productStatus?: string;
 }
 
 export interface Sale {
@@ -97,6 +105,8 @@ export interface AnalyticsData {
   averageOrderValue: number;
   lowStockCount: number;
   outOfStockCount: number;
+  inventoryValue: number;
+  profit: number;
   topSellers: Array<{
     productId: string;
     productName: string;
@@ -149,11 +159,21 @@ async function request<T>(endpoint: string, options?: RequestInit): Promise<T> {
     console.warn('Could not read auth_user from localStorage', e);
   }
 
+  let token = '';
+  try {
+    if (typeof window !== 'undefined') {
+      token = localStorage.getItem('auth_token') || '';
+    }
+  } catch (e) {}
+
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
     ...((options?.headers as Record<string, string>) || {}),
   };
 
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
   if (businessOwner) {
     headers['X-Business-Owner'] = businessOwner;
   }

@@ -26,23 +26,23 @@ public class PostgresSaleRepository implements SaleRepository {
         @Override
         public Sale mapRow(ResultSet rs, int rowNum) throws SQLException {
             Sale s = new Sale();
-            s.setBillId(rs.getString("billId"));
-            s.setProductId(rs.getString("productId"));
-            s.setQuantitySold(rs.getInt("quantitySold"));
-            s.setSaleDate(rs.getString("saleDate"));
-            s.setTotalAmount(rs.getDouble("totalAmount"));
-            s.setProductName(rs.getString("productName"));
+            s.setBillId(rs.getString("billid"));
+            s.setProductId(rs.getString("productid"));
+            s.setQuantitySold(rs.getInt("quantitysold"));
+            s.setSaleDate(rs.getString("saledate"));
+            s.setTotalAmount(rs.getDouble("totalamount"));
+            s.setProductName(rs.getString("productname"));
             s.setPrice(rs.getDouble("price"));
-            s.setOriginalLineTotal(rs.getDouble("originalLineTotal"));
-            s.setDiscountApplied(rs.getDouble("discountApplied"));
-            s.setCustomerMobile(rs.getString("customerMobile"));
-            s.setCustomerName(rs.getString("customerName"));
-            s.setPointsEarned(rs.getInt("pointsEarned"));
-            s.setTotalPoints(rs.getInt("totalPoints"));
+            s.setOriginalLineTotal(rs.getDouble("originallinetotal"));
+            s.setDiscountApplied(rs.getDouble("discountapplied"));
+            s.setCustomerMobile(rs.getString("customermobile"));
+            s.setCustomerName(rs.getString("customername"));
+            s.setPointsEarned(rs.getInt("pointsearned"));
+            s.setTotalPoints(rs.getInt("totalpoints"));
             s.setSubtotal(rs.getDouble("subtotal"));
             s.setDiscount(rs.getDouble("discount"));
             s.setTax(rs.getDouble("tax"));
-            s.setFinalAmount(rs.getDouble("finalAmount"));
+            s.setFinalAmount(rs.getDouble("finalamount"));
             return s;
         }
     };

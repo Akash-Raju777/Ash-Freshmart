@@ -27,12 +27,12 @@ public class PostgresNotificationRepository implements NotificationRepository {
         @Override
         public Notification mapRow(ResultSet rs, int rowNum) throws SQLException {
             Notification n = new Notification();
-            n.setNotificationId(rs.getString("notificationId"));
+            n.setNotificationId(rs.getString("notificationid"));
             n.setType(rs.getString("type"));
             n.setMessage(rs.getString("message"));
-            n.setProductId(rs.getString("productId"));
+            n.setProductId(rs.getString("productid"));
             n.setTimestamp(rs.getString("timestamp"));
-            n.setReadStatus(rs.getBoolean("readStatus"));
+            n.setReadStatus(rs.getBoolean("readstatus"));
             return n;
         }
     };

@@ -30,12 +30,22 @@ public class PostgresProductRepository implements ProductRepository {
             p.setId(rs.getString("id"));
             p.setName(rs.getString("name"));
             p.setBrand(rs.getString("brand"));
-            p.setPhotoUrl(rs.getString("photoUrl"));
-            p.setMfgDate(rs.getString("mfgDate"));
-            p.setExpDate(rs.getString("expDate"));
-            p.setArrivingDate(rs.getString("arrivingDate"));
+            p.setPhotoUrl(rs.getString("photourl"));
+            p.setMfgDate(rs.getString("mfgdate"));
+            p.setExpDate(rs.getString("expdate"));
+            p.setArrivingDate(rs.getString("arrivingdate"));
             p.setQuantity(rs.getInt("quantity"));
             p.setPrice(rs.getDouble("price"));
+            
+            // New Fields
+            p.setSku(rs.getString("sku"));
+            p.setBarcode(rs.getString("barcode"));
+            p.setCategory(rs.getString("category"));
+            p.setCostPrice(rs.getDouble("cost_price"));
+            p.setGst(rs.getDouble("gst"));
+            p.setSupplier(rs.getString("supplier"));
+            p.setBatchNumber(rs.getString("batch_number"));
+            p.setProductStatus(rs.getString("product_status"));
             return p;
         }
     };
@@ -43,14 +53,18 @@ public class PostgresProductRepository implements ProductRepository {
     @Override
     public List<Product> findAll() {
         String tenant = TenantContext.getCurrentTenant();
-        return jdbcTemplate.query("SELECT id, name, brand, photoUrl, mfgDate, expDate, arrivingDate, quantity, price FROM products WHERE business_id = ?", rowMapper, tenant);
+        return jdbcTemplate.query(
+                "SELECT id, name, brand, photoUrl, mfgDate, expDate, arrivingDate, quantity, price, sku, barcode, category, cost_price, gst, supplier, batch_number, product_status FROM products WHERE business_id = ?",
+                rowMapper,
+                tenant
+        );
     }
 
     @Override
     public Optional<Product> findById(String id) {
         String tenant = TenantContext.getCurrentTenant();
         List<Product> list = jdbcTemplate.query(
-                "SELECT id, name, brand, photoUrl, mfgDate, expDate, arrivingDate, quantity, price FROM products WHERE id = ? AND business_id = ?",
+                "SELECT id, name, brand, photoUrl, mfgDate, expDate, arrivingDate, quantity, price, sku, barcode, category, cost_price, gst, supplier, batch_number, product_status FROM products WHERE id = ? AND business_id = ?",
                 rowMapper,
                 id,
                 tenant
@@ -68,7 +82,7 @@ public class PostgresProductRepository implements ProductRepository {
         Optional<Product> existing = findById(product.getId());
         if (existing.isPresent()) {
             jdbcTemplate.update(
-                    "UPDATE products SET name = ?, brand = ?, photoUrl = ?, mfgDate = ?, expDate = ?, arrivingDate = ?, quantity = ?, price = ? WHERE id = ? AND business_id = ?",
+                    "UPDATE products SET name = ?, brand = ?, photoUrl = ?, mfgDate = ?, expDate = ?, arrivingDate = ?, quantity = ?, price = ?, sku = ?, barcode = ?, category = ?, cost_price = ?, gst = ?, supplier = ?, batch_number = ?, product_status = ? WHERE id = ? AND business_id = ?",
                     product.getName(),
                     product.getBrand(),
                     product.getPhotoUrl(),
@@ -77,12 +91,20 @@ public class PostgresProductRepository implements ProductRepository {
                     product.getArrivingDate(),
                     product.getQuantity(),
                     product.getPrice(),
+                    product.getSku(),
+                    product.getBarcode(),
+                    product.getCategory(),
+                    product.getCostPrice(),
+                    product.getGst(),
+                    product.getSupplier(),
+                    product.getBatchNumber(),
+                    product.getProductStatus(),
                     product.getId(),
                     tenant
             );
         } else {
             jdbcTemplate.update(
-                    "INSERT INTO products (id, name, brand, photoUrl, mfgDate, expDate, arrivingDate, quantity, price, business_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                    "INSERT INTO products (id, name, brand, photoUrl, mfgDate, expDate, arrivingDate, quantity, price, business_id, sku, barcode, category, cost_price, gst, supplier, batch_number, product_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                     product.getId(),
                     product.getName(),
                     product.getBrand(),
@@ -92,7 +114,15 @@ public class PostgresProductRepository implements ProductRepository {
                     product.getArrivingDate(),
                     product.getQuantity(),
                     product.getPrice(),
-                    tenant
+                    tenant,
+                    product.getSku(),
+                    product.getBarcode(),
+                    product.getCategory(),
+                    product.getCostPrice(),
+                    product.getGst(),
+                    product.getSupplier(),
+                    product.getBatchNumber(),
+                    product.getProductStatus()
             );
         }
         return product;

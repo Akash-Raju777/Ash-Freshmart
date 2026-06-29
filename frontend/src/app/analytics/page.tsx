@@ -90,6 +90,8 @@ export default function AnalyticsPage() {
 
   const kpis = [
     { name: 'Total Revenue', value: `$${data.totalRevenue.toLocaleString()}`, icon: DollarSign, color: 'text-emerald-400 border-emerald-500/20 bg-emerald-500/5' },
+    { name: 'Estimated Profit', value: `$${data.profit.toLocaleString()}`, icon: TrendingUp, color: 'text-teal-400 border-teal-500/20 bg-teal-500/5' },
+    { name: 'Inventory Value', value: `$${data.inventoryValue.toLocaleString()}`, icon: BarChart3, color: 'text-amber-400 border-amber-500/20 bg-amber-500/5' },
     { name: 'Bills Processed', value: data.totalOrders, icon: ShoppingBag, color: 'text-blue-400 border-blue-500/20 bg-blue-500/5' },
     { name: 'Average Ticket Value', value: `$${data.averageOrderValue.toFixed(2)}`, icon: TrendingUp, color: 'text-purple-400 border-purple-500/20 bg-purple-500/5' },
     { name: 'Low/Out Stock Alerts', value: data.lowStockCount + data.outOfStockCount, icon: AlertTriangle, color: 'text-rose-400 border-rose-500/20 bg-rose-500/5' }
@@ -106,7 +108,7 @@ export default function AnalyticsPage() {
       </div>
 
       {/* Analytics KPI cards */}
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+      <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 mb-8">
         {kpis.map((kpi, i) => {
           const Icon = kpi.icon;
           return (

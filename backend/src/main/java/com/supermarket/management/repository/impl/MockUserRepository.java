@@ -10,7 +10,7 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Repository
-@Profile("!aws")
+@Profile("!rds")
 public class MockUserRepository implements UserRepository {
     private final Map<String, UserAccount> users = new ConcurrentHashMap<>();
 

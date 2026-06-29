@@ -34,12 +34,34 @@ public class AnalyticsService {
         double avgOrderValue = totalOrders > 0 ? (totalRevenue / totalOrders) : 0.0;
         long lowStockCount = products.stream().filter(p -> p.getQuantity() > 0 && p.getQuantity() <= 5).count();
         long outOfStockCount = products.stream().filter(p -> p.getQuantity() == 0).count();
+        
+        // Inventory Value at Cost Price (fallback to selling price * 0.7 if cost is null)
+        double inventoryValue = products.stream().mapToDouble(p -> {
+            double cost = (p.getCostPrice() != null && p.getCostPrice() > 0) ? p.getCostPrice() : (p.getPrice() * 0.7);
+            return p.getQuantity() * cost;
+        }).sum();
+
+        // Exact Profit Margin: Quantity * (Price - CostPrice)
+        double profit = 0.0;
+        for (Sale sale : sales) {
+            Optional<Product> pOpt = productRepository.findById(sale.getProductId());
+            if (pOpt.isPresent()) {
+                double cost = (pOpt.get().getCostPrice() != null && pOpt.get().getCostPrice() > 0) 
+                        ? pOpt.get().getCostPrice() 
+                        : (sale.getPrice() * 0.7);
+                profit += sale.getQuantitySold() * (sale.getPrice() - cost);
+            } else {
+                profit += sale.getQuantitySold() * (sale.getPrice() * 0.3); // fallback
+            }
+        }
 
         analytics.put("totalRevenue", Math.round(totalRevenue * 100.0) / 100.0);
         analytics.put("totalOrders", totalOrders);
         analytics.put("averageOrderValue", Math.round(avgOrderValue * 100.0) / 100.0);
         analytics.put("lowStockCount", lowStockCount);
         analytics.put("outOfStockCount", outOfStockCount);
+        analytics.put("inventoryValue", Math.round(inventoryValue * 100.0) / 100.0);
+        analytics.put("profit", Math.round(profit * 100.0) / 100.0);
 
         // 2. Product-wise sales performance (Top Sellers)
         Map<String, Integer> productQtySold = sales.stream()
@@ -98,7 +120,6 @@ public class AnalyticsService {
         analytics.put("dailyTrend", dailyTrend);
 
         // 5. Weekly Sales Trend
-        // Map sales to "Week X" of the year
         Map<String, Double> weeklyRevenue = new HashMap<>();
         for (Sale sale : sales) {
             try {
@@ -117,7 +138,6 @@ public class AnalyticsService {
             weekItem.put("revenue", Math.round(entry.getValue() * 100.0) / 100.0);
             weeklyTrend.add(weekItem);
         }
-        // Sort weekly trend roughly by key
         weeklyTrend.sort(Comparator.comparing(a -> (String) a.get("week")));
         analytics.put("weeklyTrend", weeklyTrend);
 

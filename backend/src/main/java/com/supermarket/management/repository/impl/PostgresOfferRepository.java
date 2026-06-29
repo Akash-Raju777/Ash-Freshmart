@@ -27,13 +27,13 @@ public class PostgresOfferRepository implements OfferRepository {
         @Override
         public Offer mapRow(ResultSet rs, int rowNum) throws SQLException {
             Offer o = new Offer();
-            o.setOfferId(rs.getString("offerId"));
-            o.setProductId(rs.getString("productId"));
-            o.setOfferType(rs.getString("offerType"));
+            o.setOfferId(rs.getString("offerid"));
+            o.setProductId(rs.getString("productid"));
+            o.setOfferType(rs.getString("offertype"));
             o.setDiscount(rs.getDouble("discount"));
             o.setActive(rs.getBoolean("active"));
-            o.setStartDate(rs.getString("startDate"));
-            o.setEndDate(rs.getString("endDate"));
+            o.setStartDate(rs.getString("startdate"));
+            o.setEndDate(rs.getString("enddate"));
             return o;
         }
     };

@@ -14,7 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @Repository
-@Profile("!aws")
+@Profile("!rds")
 public class MockSaleRepository implements SaleRepository {
 
     private final Map<String, List<Sale>> sales = new ConcurrentHashMap<>();

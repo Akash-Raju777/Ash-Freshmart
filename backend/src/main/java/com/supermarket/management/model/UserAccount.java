@@ -1,10 +1,5 @@
 package com.supermarket.management.model;
 
-import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbAttribute;
-import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
-import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
-
-@DynamoDbBean
 public class UserAccount {
     private String username;
     private String password;
@@ -21,8 +16,6 @@ public class UserAccount {
         this.role = role;
     }
 
-    @DynamoDbPartitionKey
-    @DynamoDbAttribute("username")
     public String getUsername() {
         return username;
     }
@@ -31,7 +24,6 @@ public class UserAccount {
         this.username = username;
     }
 
-    @DynamoDbAttribute("password")
     public String getPassword() {
         return password;
     }
@@ -40,7 +32,6 @@ public class UserAccount {
         this.password = password;
     }
 
-    @DynamoDbAttribute("business_name")
     public String getBusinessName() {
         return businessName;
     }
@@ -49,7 +40,6 @@ public class UserAccount {
         this.businessName = businessName;
     }
 
-    @DynamoDbAttribute("role")
     public String getRole() {
         return role;
     }

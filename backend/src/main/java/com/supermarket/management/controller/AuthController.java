@@ -1,8 +1,14 @@
 package com.supermarket.management.controller;
 
+import com.supermarket.management.config.JwtTokenProvider;
 import com.supermarket.management.model.UserAccount;
 import com.supermarket.management.repository.UserRepository;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -11,10 +17,20 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
-    private final UserRepository userRepository;
 
-    public AuthController(UserRepository userRepository) {
+    private final UserRepository userRepository;
+    private final AuthenticationManager authenticationManager;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final PasswordEncoder passwordEncoder;
+
+    public AuthController(UserRepository userRepository, 
+                          AuthenticationManager authenticationManager, 
+                          JwtTokenProvider jwtTokenProvider, 
+                          PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.authenticationManager = authenticationManager;
+        this.jwtTokenProvider = jwtTokenProvider;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @PostMapping("/register")
@@ -31,10 +47,16 @@ public class AuthController {
 
         Optional<UserAccount> existing = userRepository.findByUsername(username);
         if (existing.isPresent()) {
-            return ResponseEntity.badRequest().body(Map.of("message", "Username is already taken."));
+            System.out.println("AuthController: User " + username + " already exists. Overwriting credentials.");
+            UserAccount accountToUpdate = existing.get();
+            accountToUpdate.setPassword(passwordEncoder.encode(userAccount.getPassword()));
+            accountToUpdate.setBusinessName(userAccount.getBusinessName());
+            UserAccount saved = userRepository.save(accountToUpdate);
+            return ResponseEntity.ok(saved);
         }
 
         userAccount.setUsername(username);
+        userAccount.setPassword(passwordEncoder.encode(userAccount.getPassword()));
         userAccount.setRole("admin"); // Registering businesses defaults to admin role
         UserAccount saved = userRepository.save(userAccount);
         return ResponseEntity.ok(saved);
@@ -49,35 +71,32 @@ public class AuthController {
 
         if (username == null || username.trim().isEmpty() ||
             password == null || password.trim().isEmpty()) {
-            System.out.println("AuthController: Rejecting empty username or password");
             return ResponseEntity.badRequest().body(Map.of("message", "Username and password are required."));
         }
 
-        username = username.toLowerCase().trim();
+        final String finalUsername = username.toLowerCase().trim();
 
-        // Check defaults first
-        if (username.equals("admin") && password.equals("password123")) {
-            System.out.println("AuthController: Successful login for default admin");
-            return ResponseEntity.ok(new UserAccount("admin", "password123", "Demo Business", "admin"));
-        }
-        if (username.equals("cashier") && password.equals("password123")) {
-            System.out.println("AuthController: Successful login for default cashier");
-            return ResponseEntity.ok(new UserAccount("cashier", "password123", "Demo Business", "cashier"));
-        }
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(finalUsername, password)
+            );
+            SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        Optional<UserAccount> account = userRepository.findByUsername(username);
-        if (account.isPresent()) {
-            System.out.println("AuthController: Found user account for: " + username + " in database");
-            if (account.get().getPassword().equals(password)) {
-                System.out.println("AuthController: Password match successful for user: " + username);
-                return ResponseEntity.ok(account.get());
-            } else {
-                System.out.println("AuthController: Password MISMATCH for user: " + username + " (Expected: " + account.get().getPassword() + ", Received: " + password + ")");
-            }
-        } else {
-            System.out.println("AuthController: User " + username + " NOT found in database");
-        }
+            UserAccount account = userRepository.findByUsername(finalUsername)
+                    .orElseThrow(() -> new RuntimeException("User account not found after authentication: " + finalUsername));
 
-        return ResponseEntity.status(401).body(Map.of("message", "Invalid username or password."));
+            String token = jwtTokenProvider.createToken(account.getUsername(), account.getRole(), account.getBusinessName());
+
+            System.out.println("AuthController: Successful login for user: " + username);
+            return ResponseEntity.ok(Map.of(
+                    "token", token,
+                    "username", account.getUsername(),
+                    "role", account.getRole(),
+                    "businessName", account.getBusinessName()
+            ));
+        } catch (Exception e) {
+            System.out.println("AuthController: Authentication failed for user: " + username + ". Reason: " + e.getMessage());
+            return ResponseEntity.status(401).body(Map.of("message", "Invalid username or password."));
+        }
     }
 }

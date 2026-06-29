@@ -101,7 +101,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // 1. Try online login first using backend REST endpoint (allows phone-to-laptop sharing!)
     try {
       const response = await api.login(cleanUsername, cleanPassword);
-      if (response && response.username) {
+      if (response && response.token) {
         const newUser: User = {
           name: response.role === "admin" ? (response.businessName + " Manager") : response.businessName,
           username: response.username,
@@ -109,6 +109,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           businessName: response.businessName
         };
         setUser(newUser);
+        safeStorage.setItem("auth_token", response.token);
         safeStorage.setItem("auth_user", JSON.stringify(newUser));
         return;
       }
@@ -214,10 +215,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       list = [];
     }
 
-    if (list.some((u: any) => u.username.toLowerCase() === cleanUsername)) {
-      throw new Error("Username already taken.");
-    }
-
     const newUserRecord = {
       businessName: businessName.trim(),
       username: cleanUsername,
@@ -225,13 +222,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       role: "admin",
     };
 
-    list.push(newUserRecord);
+    const existingIndex = list.findIndex((u: any) => u.username.toLowerCase() === cleanUsername);
+    if (existingIndex >= 0) {
+      list[existingIndex] = newUserRecord;
+    } else {
+      list.push(newUserRecord);
+    }
     safeStorage.setItem("registered_users", JSON.stringify(list));
   };
 
   const logout = () => {
     setUser(null);
     safeStorage.removeItem("auth_user");
+    safeStorage.removeItem("auth_token");
   };
 
   return (

@@ -1,10 +1,5 @@
 package com.supermarket.management.model;
 
-import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbAttribute;
-import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
-import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
-
-@DynamoDbBean
 public class Notification {
     private String notificationId;
     private String type;
@@ -25,8 +20,6 @@ public class Notification {
         this.readStatus = readStatus;
     }
 
-    @DynamoDbPartitionKey
-    @DynamoDbAttribute("notification_id")
     public String getNotificationId() {
         return notificationId;
     }
@@ -35,7 +28,6 @@ public class Notification {
         this.notificationId = notificationId;
     }
 
-    @DynamoDbAttribute("type")
     public String getType() {
         return type;
     }
@@ -44,7 +36,6 @@ public class Notification {
         this.type = type;
     }
 
-    @DynamoDbAttribute("message")
     public String getMessage() {
         return message;
     }
@@ -53,7 +44,6 @@ public class Notification {
         this.message = message;
     }
 
-    @DynamoDbAttribute("product_id")
     public String getProductId() {
         return productId;
     }
@@ -62,7 +52,6 @@ public class Notification {
         this.productId = productId;
     }
 
-    @DynamoDbAttribute("timestamp")
     public String getTimestamp() {
         return timestamp;
     }
@@ -71,7 +60,6 @@ public class Notification {
         this.timestamp = timestamp;
     }
 
-    @DynamoDbAttribute("read_status")
     public Boolean getReadStatus() {
         return readStatus;
     }

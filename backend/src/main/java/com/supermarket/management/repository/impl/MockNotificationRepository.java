@@ -15,7 +15,7 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Repository
-@Profile("!aws")
+@Profile("!rds")
 public class MockNotificationRepository implements NotificationRepository {
 
     private final Map<String, Notification> notifications = new ConcurrentHashMap<>();
