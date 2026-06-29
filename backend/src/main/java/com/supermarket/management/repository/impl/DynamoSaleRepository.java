@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Repository
-@Profile("aws")
+@Profile("aws & !rds")
 public class DynamoSaleRepository implements SaleRepository {
 
     private final DynamoDbTable<Sale> saleTable;

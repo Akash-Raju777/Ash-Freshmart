@@ -14,7 +14,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Repository
-@Profile("aws")
+@Profile("aws & !rds")
 public class DynamoOfferRepository implements OfferRepository {
 
     private final DynamoDbTable<Offer> offerTable;

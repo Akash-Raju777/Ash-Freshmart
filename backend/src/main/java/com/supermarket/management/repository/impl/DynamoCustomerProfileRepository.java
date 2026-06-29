@@ -12,7 +12,7 @@ import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
 import java.util.Optional;
 
 @Repository
-@Profile("aws")
+@Profile("aws & !rds")
 public class DynamoCustomerProfileRepository implements CustomerProfileRepository {
 
     private final DynamoDbTable<CustomerProfile> customerTable;

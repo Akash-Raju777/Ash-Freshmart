@@ -158,6 +158,12 @@ public class RdsPostgresConfig {
                             "name VARCHAR(255), " +
                             "points INTEGER)");
                     System.out.println("-> Table 'customer_profiles' verified/created.");
+
+                    stmt.execute("CREATE TABLE IF NOT EXISTS user_accounts (" +
+                            "username VARCHAR(100) PRIMARY KEY, " +
+                            "password VARCHAR(255), " +
+                            "role VARCHAR(50))");
+                    System.out.println("-> Table 'user_accounts' verified/created.");
                     
                     System.out.println("SUCCESS: RDS 'db push' schema initialization completed successfully!");
                 } catch (Exception e) {

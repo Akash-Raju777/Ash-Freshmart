@@ -14,7 +14,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Repository
-@Profile("aws")
+@Profile("aws & !rds")
 public class DynamoNotificationRepository implements NotificationRepository {
 
     private final DynamoDbTable<Notification> notificationTable;
