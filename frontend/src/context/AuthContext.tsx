@@ -77,8 +77,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // 3. Load session from localStorage on mount (secured with try-catch-finally)
     try {
       const savedUser = safeStorage.getItem("auth_user");
-      if (savedUser) {
+      const savedToken = safeStorage.getItem("auth_token");
+      if (savedUser && savedToken) {
         setUser(JSON.parse(savedUser));
+      } else {
+        setUser(null);
+        safeStorage.removeItem("auth_user");
+        safeStorage.removeItem("auth_token");
       }
     } catch (e) {
       console.warn("Auth initialization storage blocked:", e);
