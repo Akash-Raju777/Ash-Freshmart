@@ -58,35 +58,34 @@ public class RdsPostgresConfig {
             System.out.println("Region: " + rdsRegion);
             System.out.println("----------------------------------------------------------------");
 
-            // 1. Resolve AWS Credentials
-            StaticCredentialsProvider credentialsProvider = null;
-            if (accessKeyId != null && !accessKeyId.trim().isEmpty() &&
-                secretAccessKey != null && !secretAccessKey.trim().isEmpty()) {
-                credentialsProvider = StaticCredentialsProvider.create(
-                    AwsBasicCredentials.create(accessKeyId.trim(), secretAccessKey.trim())
-                );
-            }
+            // 1. Resolve AWS Credentials using the standard DefaultCredentialsProvider
+            software.amazon.awssdk.auth.credentials.AwsCredentialsProvider credentialsProvider = 
+                software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider.create();
 
-            // 2. Generate RDS IAM Database Authentication Token
-            String token = "";
-            try {
-                RdsUtilities rdsUtilities = RdsUtilities.builder()
-                        .region(Region.of(rdsRegion))
-                        .credentialsProvider(credentialsProvider)
-                        .build();
+            // 2. Generate or use pre-configured RDS IAM Database Authentication Token
+            String token = System.getProperty("RDS_PASSWORD");
+            if (token != null && !token.trim().isEmpty()) {
+                System.out.println("Using pre-configured AWS RDS IAM DB Auth Token from .env!");
+            } else {
+                try {
+                    RdsUtilities rdsUtilities = RdsUtilities.builder()
+                            .region(Region.of(rdsRegion))
+                            .credentialsProvider(credentialsProvider)
+                            .build();
 
-                GenerateAuthenticationTokenRequest tokenRequest = GenerateAuthenticationTokenRequest.builder()
-                        .credentialsProvider(credentialsProvider)
-                        .hostname(rdsHost)
-                        .port(rdsPort)
-                        .username(rdsUser)
-                        .build();
+                    GenerateAuthenticationTokenRequest tokenRequest = GenerateAuthenticationTokenRequest.builder()
+                            .credentialsProvider(credentialsProvider)
+                            .hostname(rdsHost)
+                            .port(rdsPort)
+                            .username(rdsUser)
+                            .build();
 
-                token = rdsUtilities.generateAuthenticationToken(tokenRequest);
-                System.out.println("Successfully generated AWS RDS IAM DB Auth Token!");
-            } catch (Exception e) {
-                System.err.println("Failed to generate AWS RDS IAM DB Auth Token: " + e.getMessage());
-                return;
+                    token = rdsUtilities.generateAuthenticationToken(tokenRequest);
+                    System.out.println("Successfully generated AWS RDS IAM DB Auth Token!");
+                } catch (Exception e) {
+                    System.err.println("Failed to generate AWS RDS IAM DB Auth Token: " + e.getMessage());
+                    return;
+                }
             }
 
             // 3. Attempt to connect via JDBC using dynamic IAM token as password
