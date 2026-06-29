@@ -141,6 +141,7 @@ export default function ProductTrackerPage() {
       }
 
       const productPayload: Product = {
+        ...(editingProduct || {}),
         id: formId || undefined,
         name: formName,
         brand: formBrand,
